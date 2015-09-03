@@ -49,7 +49,7 @@ tilename() {
 	row="$2"
 
 	# Customize based on your need.
-	echo "../../ets2/tiles/dark_google/7/${row}/${col}.png"
+	echo "../../ets2/tiles/dark_google/6/${row}/${col}.png"
 }
 
 generate_file_list() {
@@ -274,6 +274,22 @@ join_at_xy img meta
 join_at_xy_r meta img
 	= join_at_xy img meta;
 
+get_list_of_dimensions metalist
+	= [ [((get_width img) + x), ((get_height img) + y)] :: [img, x, y] <- metalist];
+
+// Input: [ [20, 10], [10, 20] ]
+// Output: [20, 20]
+max_dimensions list
+	= [1, 1], list == []
+	= [ (max_pair head?0 answer?0), (max_pair head?1 answer?1) ]
+{
+	head : tail = list;
+	answer = max_dimensions tail;
+}
+
+
+// RGB or RGBA?
+// Processing the list left-to-right or right-to-left?
 // Choose one:
 
 // main = large_rgb;
@@ -282,14 +298,26 @@ join_at_xy_r meta img
 // main = large_rgba;
 // large_rgba = foldl join_at_xy black_rgba tiles_rgba;
 
-main = large_rgb_r;
-large_rgb_r  = foldr join_at_xy_r black_rgb  tiles_rgb;
+// main = large_rgb_r;
+// large_rgb_r  = foldr join_at_xy_r black_rgb  tiles_rgb;
 
-// main = large_rgba_r;
-// large_rgba_r = foldr join_at_xy_r black_rgba tiles_rgba;
+main = large_rgba_r;
+large_rgba_r = foldr join_at_xy_r black_rgba tiles_rgba;
 
-tiles_rgb  = [ (remove_alpha h) : t :: h:t <- tiles];
-// tiles_rgba = [ (add_alpha    h) : t :: h:t <- tiles];
+
+// Trying to work around nip2 hard-coded stack limit by splitting the large
+// list into smaller ones.
+// main = foldr alpha_blend_at_zero_zero canvas grouped_imgs;
+// alpha_blend_at_zero_zero base overlay = alpha_blend_at_zero_zero base overlay 0 0 1.0;
+// canvas = alternative_image_new max_width max_height 4 0;
+// //[max_width, max_height] = max_dimensions [ max_dimensions (get_list_of_dimensions g) :: g <- groups ];
+// [max_width, max_height] = max_dimensions [ [(get_width img), (get_height img)] :: img <- grouped_imgs ];
+// grouped_imgs = [ foldr join_at_xy_r black_rgba group :: group <- groups ];
+// groups = split_lines 1024 tiles_rgba;
+
+
+// tiles_rgb  = [ (remove_alpha h) : t :: h:t <- tiles];
+tiles_rgba = [ (add_alpha    h) : t :: h:t <- tiles];
 
 tiles = read_file argv?1;
 
@@ -307,6 +335,9 @@ trap 'rm -f "${tmpfile}"' EXIT
 
 generate_file_list > "${tmpfile}"
 
-# https://github.com/jcupitt/nip2/issues/53
-#nip2_script | nip2 --verbose -d -b -o output.png
-nip2_script | nip2 --verbose -s /dev/stdin -o output.png "${tmpfile}"
+cp -a "${tmpfile}" file.list
+exit 1
+
+nip2_script | nip2 --verbose -s /dev/stdin -o output.tif "${tmpfile}"
+
+vips im_copy output.tif output.png
