@@ -26,13 +26,34 @@ import time
 # Look at this bug report: https://bugs.launchpad.net/listen/+bug/561707
 
 # Cross-platform.
-from pymouse import PyMouse
-mouse = PyMouse()
+import pyautogui
+# Linux is high-accuracy enough:
+# http://stackoverflow.com/questions/1133857/how-accurate-is-pythons-time-sleep
+pyautogui.MINIMUM_DURATION = 0.001
+pyautogui.MINIMUM_SLEEP = 0.0001
+
 
 # For querying and manipulating the window.
 # X11-only, essentially Linux-only.
 from ewmh import EWMH
 ewmh = EWMH()
+
+
+def tween_with_delay(n):
+    '''To avoid inertia from dragging, stops moving for a while after reaching
+    the destination.
+    '''
+    if not 0.0 <= n <= 1.0:
+        raise ValueError('Argument must be between 0.0 and 1.0.')
+    return min(n * 2, 1.0)
+
+
+def tween_with_pauses(n):
+    '''Pauses before moving and after moving.
+    '''
+    if not 0.0 <= n <= 1.0:
+        raise ValueError('Argument must be between 0.0 and 1.0.')
+    return max(0, min((n - 0.25) * 2, 1.0))
 
 
 def get_win_name(win):
@@ -92,6 +113,8 @@ def main():
     ewmh.setActiveWindow(win)
     ewmh.display.flush()
 
+    drag_duration=1.0
+
     offset_x = 0
     offset_y = 0
     repeat_x = 3
@@ -102,19 +125,36 @@ def main():
             start_x = mid_x + (size_x * direction) // 2
             delta_x = size_x * direction
 
-            mouse.move(start_x, mid_y)
-            time.sleep(0.5)
+            # pyautogui.moveTo(max_x, max_y)
+            time.sleep(3)  # Waiting for the map to render.
             grab_screenshot(win, offset_x, offset_y)
-            mouse.drag(start_x - delta_x, mid_y)
-            offset_x += delta_x
-            time.sleep(0.5)
 
-        direction *= -1
-        mouse.move(mid_x, max_y)
-        time.sleep(0.5)
-        mouse.drag(mid_x, max_y - size_y)
-        offset_y += size_y
-        time.sleep(0.5)
+            if j < repeat_x - 1:  # Except the last iteration.
+                pyautogui.moveTo(start_x, mid_y)
+                time.sleep(0.0625)
+                pyautogui.mouseDown(button='left')
+                time.sleep(0.0625)
+                pyautogui.moveRel(4, 0)  # A small nudge to start the motion.
+                time.sleep(0.0625)
+                pyautogui.moveRel(-delta_x, 0, tween=tween_with_delay, duration=drag_duration)
+                #pyautogui.dragRel(-delta_x, 0, button='left', tween=tween_with_delay, duration=drag_duration)
+                pyautogui.mouseUp(button='left')
+                offset_x += delta_x
+                time.sleep(0.0625)
+
+        if i < repeat_y - 1:  # Except the last iteration.
+            direction *= -1
+            pyautogui.moveTo(mid_x, max_y)
+            time.sleep(0.0625)
+            pyautogui.mouseDown(button='left')
+            time.sleep(0.0625)
+            pyautogui.moveRel(0, 4)  # A small nudge to start the motion.
+            time.sleep(0.0625)
+            pyautogui.moveRel(0, -size_y, tween=tween_with_delay, duration=drag_duration)
+            #pyautogui.dragRel(0, -size_y, button='left', tween=tween_with_delay, duration=drag_duration)
+            pyautogui.mouseUp(button='left')
+            offset_y += size_y
+            time.sleep(0.0625)
 
 
 if __name__ == '__main__':
