@@ -38,8 +38,8 @@ fi
 # --background if smaller tiles don't fit the entire image (format: 'R G B A', space/tab/semicolon separated).
 # --tile-size is 256 by default
 vips dzsave \
-	map-medium-dark-final.png \
-	dark_google \
+	"${input}" \
+	"${base}" \
 	--layout google \
 	--suffix .png[compression=9] \
 	--background '0 0 0 0' \
