@@ -335,9 +335,9 @@ trap 'rm -f "${tmpfile}"' EXIT
 
 generate_file_list > "${tmpfile}"
 
-cp -a "${tmpfile}" file.list
-exit 1
+# For debugging:
+# cp -a "${tmpfile}" file.list
+# exit 1
 
-nip2_script | nip2 --verbose -s /dev/stdin -o output.tif "${tmpfile}"
-
-vips im_copy output.tif output.png
+nip2_script | nip2 --verbose -s /dev/stdin -o output.tif "${tmpfile}" \
+	&& vips im_copy output.tif output.png

@@ -5,6 +5,12 @@ if [ -f "$1" ] ; then
 	input="$1"
 	base="$2"
 
+	############################################################
+	# The commented code here tries to use ImageMagick to manually create tiles
+	# in a specific dimension. This code has been abandoned in favor of libvips
+	# because ImageMagick uses too much memory for extremely large images. The
+	# code is still left here because it may be useful in other cases.
+
 	# Based on http://www.imagemagick.org/Usage/crop/#crop_tile
 	# -monitor monitors the progress.
 	# +gravity disables any gravity setting (avoiding interactions with -crop).
@@ -12,7 +18,7 @@ if [ -f "$1" ] ; then
 	# +repage removes/resets the virtual canvas metadata.
 	# +adjoin forces each image to be written to separate files.
 	#
-	#convert "$input" \
+	# convert "$input" \
 	#	-monitor \
 	#	+gravity \
 	#	-crop 256x256 \
@@ -28,19 +34,23 @@ if [ -f "$1" ] ; then
 	# http://www.vips.ecs.soton.ac.uk/supported/current/doc/html/libvips/VipsForeignSave.html#vips-dzsave
 	# https://github.com/jcupitt/libvips/blob/master/libvips/foreign/dzsave.c
 	# https://github.com/jcupitt/libvips/blob/master/libvips/iofuncs/enumtypes.c
-else
-	echo "Usage: ./slice_and_resize.sh  very-large-image.png  basename"
-fi
+	############################################################
 
-# Google layout:
-# https://code.google.com/p/virtualmicroscope/wiki/SlideTiler
-# return "{{path to the slide directory}}/" + b + "/" + a.y + "/" + a.x + ".png"
-# --background if smaller tiles don't fit the entire image (format: 'R G B A', space/tab/semicolon separated).
-# --tile-size is 256 by default
-vips dzsave \
-	"${input}" \
-	"${base}" \
-	--layout google \
-	--suffix .png[compression=9] \
-	--background '0 0 0 0' \
-	--vips-progress
+	############################################################
+	# Using libvips
+
+	# Google layout:
+	# https://code.google.com/p/virtualmicroscope/wiki/SlideTiler
+	# return "{{path to the directory}}/" + zoom + "/" + a.y + "/" + a.x + ".png"
+	# --background if smaller tiles don't fit the entire image (format: 'R G B A', space/tab/semicolon separated).
+	# --tile-size is 256 by default
+	vips dzsave \
+		"${input}" \
+		"${base}" \
+		--layout google \
+		--suffix .png[compression=9] \
+		--background '0 0 0 0' \
+		--vips-progress
+else
+	echo "Usage: ./slice_and_resize.sh  very-large-image.png  basedir"
+fi
