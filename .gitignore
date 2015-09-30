@@ -1,0 +1,13 @@
+*.tif
+output.png
+
+# Python modules (that I've downloaded/saved here, just for convenience):
+ewmh
+pyautogui
+pyautogui-git
+pyewmh
+pykeyboard
+pymouse
+pytweening
+pytweening-git
+PyUserInput
