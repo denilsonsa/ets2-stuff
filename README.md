@@ -21,6 +21,8 @@ One version uses [Leaflet](http://leafletjs.com/), another uses [OpenLayers](htt
 
 The map images are loaded from `funbit-map-medium-dark-final/`. [The tiles were generated](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2#issuecomment-129958811) using `vips` tool, and then losslessly compressed using `zopflipng`. Read the description of `slice_and_resize.sh` (in this README file) for details.
 
+You can also view them online: [leaflet.html](http://denilsonsa.github.io/ets2-stuff/leaflet.html) and [openlayers.html](http://denilsonsa.github.io/ets2-stuff/openlayers.html).
+
 ### `slice_and_resize.sh`
 
 Converts one huge image into several small tiles, for use in a pan-and-zoom map-style interface.
