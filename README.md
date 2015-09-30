@@ -3,13 +3,6 @@ Random collection of ETS2-related stuff
 
 This repository is a collection of assorted stuff related to Euro Truck Simulator 2 game.
 
-Related links
--------------
-
-* [ets2-mobile-route-advisor: Investigate mini-map](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2)
-* [Full printable map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=169132), by Funbit
-* [Full A0 printable high-resolution map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=186779), by Funbit
-
 Descriptions
 ------------
 
@@ -64,3 +57,10 @@ This script is a bit rough around the edges, but works (or worked) on my Linux s
 It is somewhat inspired by [Funbit's method of grabbing ETS2 map screenshots](http://forum.scssoft.com/viewtopic.php?p=405122#p405122), although using different tools and without looking and that code.
 
 This script was supposed to be a prototype, a proof-of-concept, before writing another script to grab screenshots from ETS2 map. In the end, this second script was not written, mostly because [Funbit's ETS2 map graphics mod](http://forum.scssoft.com/viewtopic.php?p=430273#p430273) is crashing the latest versions of ETS2.
+
+External links
+-------------
+
+* [ets2-mobile-route-advisor: Investigate mini-map](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2)
+* [Full printable map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=169132), by Funbit
+* [Full A0 printable high-resolution map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=186779), by Funbit
