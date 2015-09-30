@@ -20,10 +20,22 @@
 	left: 0;
 	right: 0;
 }
+
+#track_checkbox_label {
+	position: absolute;
+	bottom: 0.5em;
+	left: 0.5em;
+	background: white;
+	color: black;
+	padding: 2px;
+	border-radius: 4px;
+}
 </style>
 </head>
 <body>
 <div id="map"></div>
+
+<label id="track_checkbox_label"><input type="checkbox" id="track_checkbox"> Track a random virtual position/rotation</label>
 
 <script>
 // Based on http://forum.scssoft.com/viewtopic.php?f=41&t=186779
@@ -205,7 +217,6 @@ var map = new ol.Map({
 });
 
 
-
 // map.on('singleclick', function(ev) {
 //   var coordinate = ev.coordinate;
 //   console.log(coordinate);
@@ -217,6 +228,55 @@ var map = new ol.Map({
 // map.getView().on('change:rotation', function(ev) {
 //   console.log(ev);
 // });
+
+
+
+
+// https://stackoverflow.com/q/32868671/
+var auto_tracking = false;
+document.getElementById('track_checkbox').checked = auto_tracking;
+var ignore_change_events = false;
+map.getView().on(['change:center', 'change:rotation'], function(ev) {
+	if (ignore_change_events) {
+		return;
+	}
+	auto_tracking = false;
+	document.getElementById('track_checkbox').checked = auto_tracking;
+});
+
+var trackingCheckboxControl = new ol.control.Control({
+	element: document.getElementById('track_checkbox_label')
+});
+map.addControl(trackingCheckboxControl);
+document.getElementById('track_checkbox').addEventListener('click', function(ev) {
+	auto_tracking = ev.target.checked;
+});
+
+
+// Virtual, fake, mock, dummy truck position and rotation.
+// Just some random numbers that get updated all the time.
+var truck_pos = [MAX_X/2, MAX_Y/2];
+var truck_rot = 0;
+var truck_delta_pos = [0, 0];
+var truck_delta_rot = 0;
+setInterval(function() {
+	if (!auto_tracking) {
+		return;
+	}
+
+	truck_delta_pos[0] += (Math.random() - 0.5) * 1;
+	truck_delta_pos[1] += (Math.random() - 0.5) * 1;
+	truck_delta_rot += (Math.random() - 0.5) * (Math.PI / 256);
+
+	truck_pos[0] += truck_delta_pos[0];
+	truck_pos[1] += truck_delta_pos[1];
+	truck_rot += truck_delta_rot;
+
+	ignore_change_events = true;
+	map.getView().setCenter(truck_pos);
+	map.getView().setRotation(truck_rot);
+	ignore_change_events = false;
+}, 40);
 
 </script>
 
