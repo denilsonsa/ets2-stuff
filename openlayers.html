@@ -13,6 +13,10 @@
 <script src="ol-3.9.0.js" type="text/javascript"></script>
 
 <style>
+body {
+	font-size: 9vmin;
+}
+
 #map {
 	position: absolute;
 	top: 0;
@@ -30,6 +34,57 @@
 	padding: 2px;
 	border-radius: 4px;
 }
+
+/* Overriding some styles from OpenLayers built-in CSS. */
+#map .ol-control {
+	background: transparent;
+	padding: 0;
+	border-radius: 0;
+}
+#map .ol-control button {
+	color: #cecece;
+	background: #6c6c6c;
+	background: linear-gradient(to bottom, #3c3c3c 0%, #6c6c6c 45%, #3c3c3c 100%);
+
+	box-sizing: content-box;
+	width: 1em;
+	height: 1em;
+	font-size: 1em;
+	line-height: 1.0;
+	text-shadow: #000 0 0 0.1em;
+	border-radius: 0.1em;
+	padding: 0.1em;
+	border: 0;
+	margin: 0;
+}
+#map .ol-control button:active {
+	color: #242424;
+	background: #ffcc2f;
+	background: linear-gradient(to bottom, #ab7d00 0%, #ffcc2f 45%, #ab7d00 100%);
+	text-shadow: none;
+}
+#map .ol-compass {
+	font-size: inherit;
+}
+#map .ol-rotate.ol-hidden {
+	/* Never hide it! */
+	opacity: 1;
+	visibility: visible;
+}
+#map .ol-zoom {
+	top: auto;
+	left: auto;
+	right: 0.5em;
+	bottom: 0.5em;
+	display: flex;
+	flex-direction: row-reverse;
+}
+#map .ol-zoom > button {
+	flex-grow: 0;
+	flex-shrink: 0;
+	margin-left: 0.2em;
+}
+
 </style>
 </head>
 <body>
@@ -154,7 +209,9 @@ var map = new ol.Map({
 		// new ol.control.OverviewMap(),
 		// new ol.control.MousePosition(),  // DEBUG
 		new ol.control.Zoom(),
-		new ol.control.Rotate()
+		new ol.control.Rotate({
+			label: '\u2B06'
+		})
 	],
 	interactions: ol.interaction.defaults().extend([
 		// Rotating by using two fingers is implemented in PinchRotate(), which is enabled by default.
