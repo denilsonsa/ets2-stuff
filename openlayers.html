@@ -33,6 +33,7 @@ body {
 	color: black;
 	padding: 2px;
 	border-radius: 4px;
+	font-size: 12px;
 }
 
 /* Overriding some styles from OpenLayers built-in CSS. */
@@ -65,11 +66,6 @@ body {
 }
 #map .ol-compass {
 	font-size: inherit;
-}
-#map .ol-rotate.ol-hidden {
-	/* Never hide it! */
-	opacity: 1;
-	visibility: visible;
 }
 #map .ol-zoom {
 	top: auto;
@@ -210,6 +206,7 @@ var map = new ol.Map({
 		// new ol.control.MousePosition(),  // DEBUG
 		new ol.control.Zoom(),
 		new ol.control.Rotate({
+			autoHide: false,
 			label: '\u2B06'
 		})
 	],
