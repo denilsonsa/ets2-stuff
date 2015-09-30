@@ -19,6 +19,8 @@ Demonstrations of viewing [Funbit's ET2 map](http://forum.scssoft.com/viewtopic.
 
 One version uses [Leaflet](http://leafletjs.com/), another uses [OpenLayers](http://openlayers.org/). Both versions implement a custom projection (i.e. custom coordinates). Sometimes the result is a bit buggy.
 
+The map images are loaded from `funbit-map-medium-dark-final/`. [The tiles were generated](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2#issuecomment-129958811) using `vips` tool, and then losslessly compressed using `zopflipng`. Read the description of `slice_and_resize.sh` (in this README file) for details.
+
 ### `slice_and_resize.sh`
 
 Converts one huge image into several small tiles, for use in a pan-and-zoom map-style interface.
