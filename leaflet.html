@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Leaflet demo for ets2-mobile-route-advisor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- Note: if this demo gets incorporated into ets2-mobile-route-advisor, I'd recommend including a copy of these files. That way, it will work even without Internet connection. -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.1/leaflet.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.1/leaflet.js"></script>
+
+<style>
+#map {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+// Based on http://forum.scssoft.com/viewtopic.php?f=41&t=186779
+function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
+    return [
+        (x / pointsPerPixel + x0) | 0,
+        (y / pointsPerPixel + y0) | 0
+    ];
+}
+function calculatePixelCoordinateEu(x, y) {
+    return calculatePixelCoordinate(x, y, 7.278, 11367, 9962);
+}
+function calculatePixelCoordinateUk(x, y) {
+   return calculatePixelCoordinate(x, y, 9.69522, 10226, 9826);
+}
+
+
+function game_coord_to_pixels(x, y) {
+	// I suppose either x,y are both positive, or they are both negative.
+	if (x < 0) {
+		return calculatePixelCoordinateUk(x, y);
+	} else {
+		return calculatePixelCoordinateEu(x, y);
+	}
+}
+
+
+var MAX_X = 19200;
+var MAX_Y = 18688;
+
+
+var CustomProjection = {
+	project: function (latlng) {
+		return new L.Point(latlng.lat, latlng.lng);
+	},
+
+	unproject: function (point) {
+		return new L.LatLng(point.x, point.y);
+	},
+
+	bounds: L.bounds([0, 0], [MAX_X, MAX_Y])
+};
+var CustomCRS = L.extend({}, L.CRS, {
+	projection: CustomProjection,
+	// Why 128? Because 7 is the maximum zoom level (i.e. 1:1 scale), and pow(2, 7) = 128.
+	transformation: new L.Transformation(1.0/128, 0, 1.0/128, 0),
+
+	scale: function (zoom) {
+		return Math.pow(2, zoom);
+	},
+
+	distance: function (latlng1, latlng2) {
+		var dx = latlng2.lng - latlng1.lng,
+		    dy = latlng2.lat - latlng1.lat;
+
+		return Math.sqrt(dx * dx + dy * dy);
+	},
+
+	infinite: false
+});
+
+
+var map = L.map('map', {
+	//attributionControl: false,
+	crs: CustomCRS,
+	// maxBounds: [
+	// 	[0, 0],
+	// 	[MAX_X, MAX_Y]
+	// ]
+});
+L.tileLayer('tiles/{z}/{y}/{x}.png', {
+	minZoom: 0,
+	maxZoom: 7,
+	tileSize: 256,
+	continuousWorld: false
+}).addTo(map);
+map.setView([MAX_X/2, MAX_Y/2], 3);
+
+
+var Debrecen = L.marker(game_coord_to_pixels(41744.53, 17305.5156)).bindPopup('Debrecen').addTo(map);
+var Glasgow = L.marker(game_coord_to_pixels(-49770.64, -48417.68)).bindPopup('Glasgow').addTo(map);
+
+
+// DEBUGGING CODE BELOW!
+
+// var marker1 = L.marker([0, 0]).addTo(map);
+// var marker2 = L.marker([1, 1]).addTo(map);
+// var marker3 = L.marker([256, 256]).addTo(map);
+// var marker4 = L.marker([MAX_X/2, MAX_Y/2]).addTo(map);
+// var marker5 = L.marker([MAX_X/1, MAX_Y/2]).addTo(map);
+// var marker6 = L.marker([MAX_X/2, MAX_Y/1]).addTo(map);
+// var marker7 = L.marker([MAX_X/1, MAX_Y/1]).addTo(map);
+
+var popup = L.popup();
+
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(map);
+}
+
+map.on('click', onMapClick);
+
+/*
+// For version 1.0
+// https://github.com/Leaflet/Leaflet/issues/3736
+var DebugLayer = L.GridLayer.extend({
+    createTile: function(coords){
+        // create a <canvas> element for drawing
+        var tile = L.DomUtil.create('canvas', 'leaflet-tile');
+
+        // setup tile width and height according to the options
+        var size = this.getTileSize();
+        tile.width = size.x;
+        tile.height = size.y;
+
+        // get a canvas context and draw something on it using coords.x, coords.y and coords.z
+        var context = tile.getContext('2d');
+
+		context.beginPath();
+		context.rect(0, 0, 256, 256);
+		context.lineWidth = 2;
+		context.strokeStyle = 'white';
+		context.stroke();
+
+		context.font="20px Arial";
+		context.fillStyle = 'white';
+		context.fillText(coords.x + " / " + coords.y + " / " + coords.z, 80, 140);
+
+        // return the tile so it can be rendered on screen
+        return tile;
+    }
+});
+new DebugLayer().addTo(map);
+*/
+
+/*
+// For versions earlier than 1.0
+// https://github.com/Leaflet/Leaflet/issues/2776
+var debugLayer = L.tileLayer.canvas({
+	minZoom: 0,
+	maxZoom: 7,
+	continuousWorld: true,
+});
+
+debugLayer.drawTile = function(canvas, point, zoom) {
+	var context = canvas.getContext('2d');
+
+	context.beginPath();
+	context.rect(0, 0, 256, 256);
+	context.lineWidth = 2;
+	context.strokeStyle = 'white';
+	context.stroke();
+
+	context.font="20px Arial";
+	context.fillStyle = 'white';
+	context.fillText(point.x + " / " + point.y + " / " + zoom, 80, 140);
+}
+debugLayer.addTo(map);
+*/
+</script>
+
+</body>
+</html>

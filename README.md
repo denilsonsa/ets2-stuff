@@ -13,6 +13,12 @@ Related links
 Descriptions
 ------------
 
+### `leaflet.html` and `openlayers.html`
+
+Demonstrations of viewing [Funbit's ET2 map](http://forum.scssoft.com/viewtopic.php?f=41&t=186779) using a map UI in the browser. Written as a proof-of-concept before [being incorporated into ets2-mobile-route-advisor](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2#issuecomment-130100760).
+
+One version uses [Leaflet](http://leafletjs.com/), another uses [OpenLayers](http://openlayers.org/). Both versions implement a custom projection (i.e. custom coordinates). Sometimes the result is a bit buggy.
+
 ### `slice_and_resize.sh`
 
 Converts one huge image into several small tiles, for use in a pan-and-zoom map-style interface.
