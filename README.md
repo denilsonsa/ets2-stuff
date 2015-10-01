@@ -61,6 +61,7 @@ This script was supposed to be a prototype, a proof-of-concept, before writing a
 External links
 -------------
 
+* [`scs_extractor` tool to extract files from `base.scs`](http://www.eurotrucksimulator2.com/mod_tools.php)
 * [ets2-mobile-route-advisor: Investigate mini-map](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2)
 * [Full printable map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=169132), by Funbit
 * [Full A0 printable high-resolution map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=186779), by Funbit
