@@ -91,29 +91,28 @@ body {
 <script>
 // Based on http://forum.scssoft.com/viewtopic.php?f=41&t=186779
 function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
-    return [
-        (x / pointsPerPixel + x0) | 0,
-        (y / pointsPerPixel + y0) | 0
-    ];
+	return [
+		(x / pointsPerPixel + x0) | 0,
+		(y / pointsPerPixel + y0) | 0
+	];
 }
 function calculatePixelCoordinateEu(x, y) {
-    return calculatePixelCoordinate(x, y, 7.278, 11367, 9962);
+	return calculatePixelCoordinate(x, y, 7.278, 11367, 9962);
 }
 function calculatePixelCoordinateUk(x, y) {
-   return calculatePixelCoordinate(x, y, 9.69522, 10226, 9826);
+	return calculatePixelCoordinate(x, y, 9.69522, 10226, 9826);
 }
 
-
 function game_coord_to_pixels(x, y) {
-	// I suppose either x,y are both positive, or they are both negative.
+	// http://forum.scssoft.com/viewtopic.php?p=402836#p402836
 	var r = null;
-	if (x < 0) {
+	if (x < -31812 && y < -5618) {
 		r = calculatePixelCoordinateUk(x, y);
 	} else {
 		r = calculatePixelCoordinateEu(x, y);
 	}
 
-	// Inverting Y axis.
+	// Inverting Y axis, because of OpenLayers coordinates.
 	r[1] = MAX_Y - r[1];
 	return r;
 }
@@ -136,20 +135,20 @@ var projection = new ol.proj.Projection({
 ol.proj.addProjection(projection);
 
 ol.proj.addCoordinateTransforms('EPSG:4326', projection,
-    function(coord) {
-      return [coord[0], -coord[1]];
-    },
-    function(coord) {
-      return [coord[0], -coord[1]];
-    }
+	function(coord) {
+	  return [coord[0], -coord[1]];
+	},
+	function(coord) {
+	  return [coord[0], -coord[1]];
+	}
 );
 ol.proj.addCoordinateTransforms('EPSG:3857', projection,
-    function(coord) {
-      return [coord[0], -coord[1]];
-    },
-    function(coord) {
-      return [coord[0], -coord[1]];
-    }
+	function(coord) {
+	  return [coord[0], -coord[1]];
+	},
+	function(coord) {
+	  return [coord[0], -coord[1]];
+	}
 );
 
 var markers = [
