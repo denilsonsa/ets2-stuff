@@ -176,6 +176,18 @@ var markers = [
 		geometry: new ol.geom.Point(game_coord_to_pixels(-49770.64, -48417.68)),
 		name: 'Glasgow',
 	}),
+	new ol.Feature({
+		geometry: new ol.geom.LineString([[10, 10], [256, 256], [512, 320], [512, 512]]),
+		name: 'Sample line',
+	}),
+	new ol.Feature({
+		geometry: new ol.geom.Polygon([
+			// Outer polygon:
+			[[210, 110], [556, 156], [712, 320], [712, 512]]
+			// Optionally followed by inner polygons that define holes in the outer one.
+		]),
+		name: 'Sample polygon',
+	}),
 ];
 
 var feature_source = new ol.source.Vector({
