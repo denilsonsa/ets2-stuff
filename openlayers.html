@@ -199,6 +199,8 @@ ol.proj.addCoordinateTransforms('EPSG:3857', projection,
 	}
 );
 
+// Notice: it is not possible to set the style in the ol.Feature constructor.
+// Read about it at https://github.com/openlayers/ol3/issues/2274
 var markers = [
 	new ol.Feature({
 		geometry: new ol.geom.Point([0, 0]),
