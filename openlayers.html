@@ -81,10 +81,58 @@ body {
 	margin-left: 0.2em;
 }
 
+/* http://openlayers.org/en/v3.9.0/examples/popup.html */
+.ol-popup {
+	position: absolute;
+	background-color: white;
+	-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+	padding: 15px;
+	border-radius: 10px;
+	border: 1px solid #cccccc;
+	bottom: 12px;
+	left: -50px;
+	min-width: 280px;
+
+	font-size: 14px;
+}
+.ol-popup:after, .ol-popup:before {
+	top: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.ol-popup:after {
+	border-top-color: white;
+	border-width: 10px;
+	left: 48px;
+	margin-left: -10px;
+}
+.ol-popup:before {
+	border-top-color: #cccccc;
+	border-width: 11px;
+	left: 48px;
+	margin-left: -11px;
+}
+.ol-popup-closer {
+	text-decoration: none;
+	position: absolute;
+	top: 2px;
+	right: 8px;
+}
+
 </style>
 </head>
 <body>
 <div id="map"></div>
+
+<div id="popup" class="ol-popup">
+	<a href="javascript:close_popup()" id="popup-closer" class="ol-popup-closer">✖</a>
+	<div id="popup-content"></div>
+</div>
 
 <label id="track_checkbox_label"><input type="checkbox" id="track_checkbox"> Track a random virtual position/rotation</label>
 
@@ -166,7 +214,7 @@ var markers = [
 	}),
 	new ol.Feature({
 		geometry: new ol.geom.Point([MAX_X, MAX_Y]),
-		name: 'End',
+		name: 'Opposite corner',
 	}),
 	new ol.Feature({
 		geometry: new ol.geom.Point(game_coord_to_pixels(41744.53, 17305.5156)),
@@ -207,6 +255,27 @@ var custom_tilegrid = new ol.tilegrid.TileGrid({
 		}
 		return r;
 	})()
+});
+
+
+// http://openlayers.org/en/v3.9.0/examples/popup.html
+var popup_container = document.getElementById('popup');
+var popup_content = document.getElementById('popup-content');
+var popup_closer = document.getElementById('popup-closer');
+function close_popup(ev) {
+	popup_overlay.setPosition(undefined);
+	if (ev) {
+		ev.stopPropagation();
+		ev.preventDefault();
+	}
+	return false;
+}
+var popup_overlay = new ol.Overlay({
+	element: popup_container,
+	autoPan: true,
+	autoPanAnimation: {
+		duration: 250
+	}
 });
 
 var map = new ol.Map({
@@ -270,6 +339,9 @@ var map = new ol.Map({
 			//style: ...
 		})
 	],
+	overlays: [
+		popup_overlay
+	],
 	view: new ol.View({
 		projection: projection,
 		extent: [0, 0, MAX_X, MAX_Y],
@@ -293,6 +365,30 @@ var map = new ol.Map({
 // map.getView().on('change:rotation', function(ev) {
 //   console.log(ev);
 // });
+
+
+// http://openlayers.org/en/v3.9.0/examples/icon.html
+map.on('singleclick', function(ev) {
+	var feature = map.forEachFeatureAtPixel(ev.pixel,
+		function(feature, layer) {
+			return feature;
+		}
+	);
+
+	if (feature) {
+		var name = feature.get('name');
+		if (name) {
+			popup_content.textContent = name;
+
+			// If the feature is a Point:
+			//popup_overlay.setPosition(feature.getGeometry().getCoordinates());
+			// General-case:
+			var extent = feature.getGeometry().getExtent();
+			var coords = [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
+			popup_overlay.setPosition(coords);
+		}
+	}
+});
 
 
 
