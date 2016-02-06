@@ -58,6 +58,10 @@ It is somewhat inspired by [Funbit's method of grabbing ETS2 map screenshots](ht
 
 This script was supposed to be a prototype, a proof-of-concept, before writing another script to grab screenshots from ETS2 map. In the end, this second script was not written, mostly because [Funbit's ETS2 map graphics mod](http://forum.scssoft.com/viewtopic.php?p=430273#p430273) is crashing the latest versions of ETS2.
 
+### `gfx.svg`
+
+SVG graphics/icons related to Euro Truck Simulator 2, American Truck Simulator and [ets2-mobile-route-advisor](https://github.com/mkoch227/ets2-mobile-route-advisor).
+
 External links
 -------------
 
