@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 500 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg viewBox="0 0 400 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
         <!-- Based on the actual game gfx. -->
         <symbol id="svg-ets2-truck" viewBox="0 0 54 36">
@@ -8,7 +8,17 @@
 
         <!-- Based on the actual game gfx. -->
         <symbol id="svg-ets2-trailer" viewBox="0 0 105 39">
-            <path d="m95 34a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-14 0a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-14 0a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-31-4h13v4h-13zm-43-30h101a2 2 0 0 1 2 2v26h-105v-26a2 2 0 0 1 2-2z"/>
+            <path d="m95 34a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-14 0a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-14 0a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-31-4h13v4h-13zM2 0h101a2 2 0 0 1 2 2v26h-105v-26a2 2 0 0 1 2-2z"/>
+        </symbol>
+
+        <!-- Based on the actual game gfx. -->
+        <symbol id="svg-ats-truck" viewBox="0 0 73 40">
+            <path d="M15 34a3 3 0 0 0 -3 -3 3 3 0 0 0 -3 3 3 3 0 0 0 3 3 3 3 0 0 0 3 -3zm3 0a6 6 0 0 1 -6 6 6 6 0 0 1 -6 -6 6 6 0 0 1 6 -6 6 6 0 0 1 6 6zm47 0a3 3 0 0 0 -3 -3 3 3 0 0 0 -3 3 3 3 0 0 0 3 3 3 3 0 0 0 3 -3zm3 0a6 6 0 0 1 -6 6 6 6 0 0 1 -6 -6 6 6 0 0 1 6 -6 6 6 0 0 1 6 6zm-13-14h14v3h-14zM16 9h9v8h-9zm11 0h4v8h-4zM27,0l-4 4h-6l-2 2v11h-12v2h-1v10h-2v6h5.078a7 7 0 0 1 -0.078 -1 7 7 0 0 1 7 -7 7 7 0 0 1 7 7 7 7 0 0 1 -0.08 1h6.08v-2h11v2h19.078a7 7 0 0 1 -0.078 -1 7 7 0 0 1 7 -7 7 7 0 0 1 7 7 7 7 0 0 1 -0.08 1h2.08v1h2v-12h-2v1h-21v-1h-3v-24h-8v24h-1v-24z"/>
+        </symbol>
+
+        <!-- Based on the actual game gfx. -->
+        <symbol id="svg-ats-trailer" viewBox="0 0 114 43">
+            <path d="m104 38a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-14 0a2 2 0 0 0 -2 -2 2 2 0 0 0 -2 2 2 2 0 0 0 2 2 2 2 0 0 0 2 -2zm3 0a5 5 0 0 1 -5 5 5 5 0 0 1 -5 -5 5 5 0 0 1 5 -5 5 5 0 0 1 5 5zm-42-4h21v4h-21zM2 0h110a2 2 0 0 1 2 2v30h-114v-30a2 2 0 0 1 2-2z"/>
         </symbol>
 
         <!-- Based on the actual game icon. 12x12 image with 2 pixel margin. -->
@@ -53,6 +63,8 @@
     </defs>
 	<use xlink:href="#svg-ets2-truck"    x="0"   y="0"   width="100" height="100"/>
 	<use xlink:href="#svg-ets2-trailer"  x="100" y="0"   width="100" height="100"/>
+	<use xlink:href="#svg-ats-truck"     x="200" y="0"   width="100" height="100"/>
+	<use xlink:href="#svg-ats-trailer"   x="300" y="0"   width="100" height="100"/>
 	<use xlink:href="#svg-gear"          x="0"   y="100" width="100" height="100"/>
 	<use xlink:href="#svg-fuel"          x="100" y="100" width="100" height="100"/>
 	<use xlink:href="#svg-fatigue"       x="200" y="100" width="100" height="100"/>
