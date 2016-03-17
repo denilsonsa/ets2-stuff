@@ -62,6 +62,10 @@ This script was supposed to be a prototype, a proof-of-concept, before writing a
 
 SVG graphics/icons related to Euro Truck Simulator 2, American Truck Simulator and [ets2-mobile-route-advisor](https://github.com/mkoch227/ets2-mobile-route-advisor).
 
+### `pyets2.py` and `pyets2_experiment.ipynb`
+
+This is an incomplete rewrite of [ets2-map](https://github.com/nlhans/ets2-map). I started rewriting that C# code in Python because I wanted to have a quicker and easier environment to explore and experiment with ETS2 data. I wrote some code, but never managed to finish it (due to lack of time and higher real-life priorities). I wrote it using Python 3.4 and [Jupyter](http://jupyter.org/).
+
 External links
 -------------
 
