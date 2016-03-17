@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ETS2 coordinate conversion tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<style>
+/* Inspired by purecss.io */
+input[type="number"] {
+	display: inline-block;
+	padding: 0.5em 0.6em;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 3px #ddd;
+	vertical-align: middle;
+}
+input[type="number"]:invalid {
+	/* color: #b94a48; */
+	border-color: #e9322d;
+}
+
+form {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+fieldset {
+	flex: 0 0 auto;
+	width: 256px;
+	box-sizing: content-box;
+}
+fieldset > label {
+	display: block;
+	white-space: nowrap;
+	text-align: right;
+}
+fieldset > label > input[type="number"] {
+	width: 21ex;
+	width: 21ch;
+	box-sizing: content-box;
+}
+fieldset > label > input[type="range"] {
+	width: 21ex;
+	width: 21ch;
+	width: calc(21ex + 2 * 0.6em + 2 * 1px);
+	width: calc(21ch + 2 * 0.6em + 2 * 1px);
+	box-sizing: border-box;
+}
+fieldset > .mappreview {
+	display: block;
+	width: 256px;
+	height: 256px;
+	position: relative;
+	overflow: hidden;
+}
+fieldset > .mappreview img {
+	position: absolute;
+}
+fieldset > .mappreview .horizontal-line,
+fieldset > .mappreview .vertical-line {
+	position: absolute;
+	background: rgba(127, 255, 255, 0.33333333);
+}
+fieldset > .mappreview .horizontal-line {
+	top: 50%;
+	height: 1px;
+	left: 0;
+	right: 0;
+}
+fieldset > .mappreview .vertical-line {
+	left: 50%;
+	width: 1px;
+	top: 0;
+	bottom: 0;
+}
+</style>
+</head>
+<body>
+
+<form>
+
+<fieldset id="fieldset_game">
+	<legend>ETS2 in-game coords.</legend>
+	<label><span>x =</span> <input type="number" id="game_x" step="any"></label>
+	<label><span>z =</span> <input type="number" id="game_y" step="any"></label>
+</fieldset>
+
+<fieldset id="fieldset_funbit">
+	<legend>Funbit's map pixels</legend>
+	<label><span>x =</span> <input type="number" id="funbit_x" step="any" min="0" max="19200"></label>
+	<label><span>y =</span> <input type="number" id="funbit_y" step="any" min="0" max="18688"></label>
+	<label><span>zoom:</span> <input type="range" id="funbit_zoom" min="0" max="7" step="1" value="6"></label>
+	<div class="mappreview">
+		<div id="funbit_imgs"></div>
+		<div class="horizontal-line"></div>
+		<div class="vertical-line"></div>
+	</div>
+</fieldset>
+
+<fieldset id="fieldset_koenvh1">
+	<legend>Koenvh1's map pixels</legend>
+	<label><span>x =</span> <input type="number" id="koenvh1_x" step="any" min="0" max="28314"></label>
+	<label><span>y =</span> <input type="number" id="koenvh1_y" step="any" min="0" max="23560"></label>
+	<label><span>zoom:</span> <input type="range" id="koenvh1_zoom" min="0" max="7" step="1" value="6"></label>
+	<div class="mappreview">
+		<div id="koenvh1_imgs"></div>
+		<div class="horizontal-line"></div>
+		<div class="vertical-line"></div>
+	</div>
+</fieldset>
+
+</form>
+
+<script>
+'use strict';
+
+////////////////////////////////////////////////////////////
+
+function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
+	return {
+		'x': x / pointsPerPixel + x0,
+		'y': y / pointsPerPixel + y0
+	};
+}
+function calculateGameCoordinate(x, y, pointsPerPixel, x0, y0) {
+	return {
+		'x': (x - x0) * pointsPerPixel,
+		'y': (y - y0) * pointsPerPixel
+	};
+}
+
+function game_coord_to_funbit(x, y) {
+	// http://forum.scssoft.com/viewtopic.php?p=402836#p402836
+	if (x < -31812 && y < -5618) {
+		// UK
+		return calculatePixelCoordinate(x, y, 9.69522, 10226, 9826);
+	} else {
+		// EU
+		return calculatePixelCoordinate(x, y, 7.278, 11367, 9962);
+	}
+}
+function funbit_coord_to_game(x, y) {
+	if (x < 7000 && y < 9263) {
+		// UK
+		return calculateGameCoordinate(x, y, 9.69522, 10226, 9826);
+	} else {
+		// Europe
+		return calculateGameCoordinate(x, y, 7.278, 11367, 9962);
+	}
+}
+
+function game_coord_to_koenvh1(x, y) {
+	return calculatePixelCoordinate(x, y, 7.278, 13164, 16258);
+}
+function koenvh1_coord_to_game(x, y) {
+	return calculateGameCoordinate(x, y, 7.278, 13164, 16258);
+}
+
+
+////////////////////////////////////////////////////////////
+
+function game_coords_has_changed() {
+	var x = window.game_x.valueAsNumber;
+	var y = window.game_y.valueAsNumber;
+	if (isNaN(x) || isNaN(y)) {
+		return;
+	}
+
+	var funbit = game_coord_to_funbit(x, y);
+	window.funbit_x.valueAsNumber = funbit.x;
+	window.funbit_y.valueAsNumber = funbit.y;
+	update_funbit_map_preview(funbit.x, funbit.y);
+
+	var koenvh1 = game_coord_to_koenvh1(x, y);
+	window.koenvh1_x.valueAsNumber = koenvh1.x;
+	window.koenvh1_y.valueAsNumber = koenvh1.y;
+	update_koenvh1_map_preview(koenvh1.x, koenvh1.y);
+}
+
+function funbit_coords_has_changed() {
+	var x = window.funbit_x.valueAsNumber;
+	var y = window.funbit_y.valueAsNumber;
+	if (isNaN(x) || isNaN(y)) {
+		return;
+	}
+
+	update_funbit_map_preview(x, y);
+
+	var game = funbit_coord_to_game(x, y);
+	window.game_x.valueAsNumber = game.x;
+	window.game_y.valueAsNumber = game.y;
+
+	var koenvh1 = game_coord_to_koenvh1(game.x, game.y);
+	window.koenvh1_x.valueAsNumber = koenvh1.x;
+	window.koenvh1_y.valueAsNumber = koenvh1.y;
+	update_koenvh1_map_preview(koenvh1.x, koenvh1.y);
+}
+
+function koenvh1_coords_has_changed() {
+	var x = window.koenvh1_x.valueAsNumber;
+	var y = window.koenvh1_y.valueAsNumber;
+	if (isNaN(x) || isNaN(y)) {
+		return;
+	}
+
+	update_koenvh1_map_preview(x, y);
+
+	var game = koenvh1_coord_to_game(x, y);
+	window.game_x.valueAsNumber = game.x;
+	window.game_y.valueAsNumber = game.y;
+
+	var funbit = game_coord_to_funbit(game.x, game.y);
+	window.funbit_x.valueAsNumber = funbit.x;
+	window.funbit_y.valueAsNumber = funbit.y;
+	update_funbit_map_preview(funbit.x, funbit.y);
+}
+
+function update_map_preview(x, y, zoom, container, directory, max_zoom) {
+	var tile_size = 256;
+	var scale = 1 << (max_zoom - zoom);
+
+	var tilex = Math.floor(x / scale / tile_size);
+	var tiley = Math.floor(y / scale / tile_size);
+
+	var tilexoff = (x / scale) % tile_size;
+	var tileyoff = (y / scale) % tile_size;
+
+	function add_image(tilex, tiley, left, top) {
+		if (tilex < 0 || tiley < 0) {
+			return;
+		}
+		var url = directory + '/' + zoom + '/' + tiley + '/' + tilex + '.png';
+		var img = new Image();
+		img.src = url;
+		img.style.left = left + 'px';
+		img.style.top  = top  + 'px';
+
+		container.appendChild(img);
+	}
+
+	var center = 128;
+	var left = center - tilexoff;
+	var top  = center - tileyoff;
+
+	container.innerHTML = '';
+	for (var i = -1; i <= 1; i++) {
+		for (var j = -1; j <= 1; j++) {
+			add_image(tilex + i, tiley + j, left + i * tile_size, top + j * tile_size);
+		}
+	}
+}
+
+function update_funbit_map_preview(x, y) {
+	var zoom = window.funbit_zoom.valueAsNumber;
+	if (isNaN(zoom)) {
+		zoom = 7;
+	}
+	update_map_preview(x, y, zoom, window.funbit_imgs, 'funbit-map-medium-dark-final', 7);
+}
+
+function update_koenvh1_map_preview(x, y) {
+	var zoom = window.koenvh1_zoom.valueAsNumber;
+	if (isNaN(zoom)) {
+		zoom = 7;
+	}
+	update_map_preview(x, y, zoom, window.koenvh1_imgs, 'koenvh1-promods-rusmap', 7);
+}
+
+function init() {
+	// Quick and dirty polyfill.
+	if (!('valueAsNumber' in HTMLInputElement.prototype)) {
+		Object.defineProperty(
+			HTMLInputElement.prototype,
+			'valueAsNumber', {
+				'get': function() { return parseFloat(this.value); },
+				'set': function(v) { return (this.value = v); }
+			}
+		);
+	}
+
+	window.fieldset_game.addEventListener('input', game_coords_has_changed);
+	window.fieldset_funbit.addEventListener('input', funbit_coords_has_changed);
+	window.fieldset_koenvh1.addEventListener('input', koenvh1_coords_has_changed);
+}
+
+window.addEventListener('load', init);
+</script>
+
+</body>
+</html>

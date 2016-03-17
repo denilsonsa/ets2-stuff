@@ -6,15 +6,19 @@ This repository is a collection of assorted stuff related to Euro Truck Simulato
 Descriptions
 ------------
 
-### `leaflet.html` and `openlayers.html`
+### `leaflet.html`, `openlayers.html`, `openlayers-koenvh1.html`
 
-Demonstrations of viewing [Funbit's ET2 map](http://forum.scssoft.com/viewtopic.php?f=41&t=186779) using a map UI in the browser. Written as a proof-of-concept before [being incorporated into ets2-mobile-route-advisor](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2#issuecomment-130100760).
+Demonstrations of viewing [Funbit's ET2 map](http://forum.scssoft.com/viewtopic.php?f=41&t=186779) and [Koenvh1's ProMods + RusMap map](https://github.com/mike-koch/ets2-mobile-route-advisor/issues/77#issuecomment-192935162) using a map UI in the browser. Written as a proof-of-concept before [being incorporated into ets2-mobile-route-advisor](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2#issuecomment-130100760).
 
 One version uses [Leaflet](http://leafletjs.com/), another uses [OpenLayers](http://openlayers.org/). Both versions implement a custom projection (i.e. custom coordinates). Sometimes the result is a bit buggy.
 
 The map images are loaded from `funbit-map-medium-dark-final/`. [The tiles were generated](https://github.com/mkoch227/ets2-mobile-route-advisor/issues/2#issuecomment-129958811) using `vips` tool, and then losslessly compressed using `zopflipng`. Read the description of `slice_and_resize.sh` (in this README file) for details.
 
-You can also view them online: [leaflet.html](http://denilsonsa.github.io/ets2-stuff/leaflet.html) and [openlayers.html](http://denilsonsa.github.io/ets2-stuff/openlayers.html).
+You can also view them online: [leaflet.html](http://denilsonsa.github.io/ets2-stuff/leaflet.html) and [openlayers.html](http://denilsonsa.github.io/ets2-stuff/openlayers.html) and [openlayers-koenvh1.html](http://denilsonsa.github.io/ets2-stuff/openlayers-koenvh1.html).
+
+### `coords.html`
+
+Quick way to experiment with coordinate conversions, useful to debug the formulas. Also available online: [coords.html](http://denilsonsa.github.io/ets2-stuff/coords.html)
 
 ### `slice_and_resize.sh`
 

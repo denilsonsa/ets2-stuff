@@ -146,15 +146,7 @@ function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
 }
 
 function game_coord_to_pixels(x, y) {
-	// http://forum.scssoft.com/viewtopic.php?p=402836#p402836
-	var r = null;
-	if (x < -31812 && y < -5618) {
-		// UK
-		r =  calculatePixelCoordinate(x, y, 9.69522, 10226, 9826);
-	} else {
-		// Europe
-		r = calculatePixelCoordinate(x, y, 7.278, 11367, 9962);
-	}
+	var r = calculatePixelCoordinate(x, y, 7.278, 13164, 16258);
 
 	// Inverting Y axis, because of OpenLayers coordinates.
 	r[1] = MAX_Y - r[1];
@@ -162,13 +154,13 @@ function game_coord_to_pixels(x, y) {
 }
 
 
-var MAX_X = 19200;
-var MAX_Y = 18688;
+var MAX_X = 28314;
+var MAX_Y = 23560;
 
 
 var projection = new ol.proj.Projection({
 	// Any name here. I chose "Funbit" because we are using funbit's image coordinates.
-	code: 'Funbit',
+	code: 'koenvh1',
 	units: 'pixels',
 	extent: [0, 0, MAX_X, MAX_Y],
 	worldExtent: [0, 0, MAX_X, MAX_Y]
@@ -296,7 +288,7 @@ var map = new ol.Map({
 			extent: [0, 0, MAX_X, MAX_Y],
 			source: new ol.source.XYZ({
 				projection: projection,
-				url: 'funbit-map-medium-dark-final/{z}/{y}/{x}.png',
+				url: 'koenvh1-promods-rusmap/{z}/{y}/{x}.png',
 				tileSize: [256, 256],
 				// Using createXYZ() makes the vector layer (with the features) unaligned.
 				// It also tries loading non-existent tiles.
