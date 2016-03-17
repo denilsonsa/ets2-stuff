@@ -146,7 +146,7 @@ function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
 }
 
 function game_coord_to_pixels(x, y) {
-	var r = calculatePixelCoordinate(x, y, 7.278, 13164, 16258);
+	var r = calculatePixelCoordinate(x, y, 7.278, 13164, 16260);
 
 	// Inverting Y axis, because of OpenLayers coordinates.
 	r[1] = MAX_Y - r[1];
