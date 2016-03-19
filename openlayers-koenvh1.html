@@ -137,6 +137,73 @@ body {
 <label id="track_checkbox_label"><input type="checkbox" id="track_checkbox"> Track a random virtual position/rotation</label>
 
 <script src="cities-promods-rusmap.js"></script>
+
+<!-- Polyfill for older browsers: https://github.com/mathiasbynens/String.fromCodePoint -->
+<script>
+/*! https://mths.be/fromcodepoint v0.2.1 by @mathias */
+if (!String.fromCodePoint) {
+	(function() {
+		var defineProperty = (function() {
+			// IE 8 only supports `Object.defineProperty` on DOM elements
+			try {
+				var object = {};
+				var $defineProperty = Object.defineProperty;
+				var result = $defineProperty(object, object, object) && $defineProperty;
+			} catch(error) {}
+			return result;
+		}());
+		var stringFromCharCode = String.fromCharCode;
+		var floor = Math.floor;
+		var fromCodePoint = function(_) {
+			var MAX_SIZE = 0x4000;
+			var codeUnits = [];
+			var highSurrogate;
+			var lowSurrogate;
+			var index = -1;
+			var length = arguments.length;
+			if (!length) {
+				return '';
+			}
+			var result = '';
+			while (++index < length) {
+				var codePoint = Number(arguments[index]);
+				if (
+					!isFinite(codePoint) || // `NaN`, `+Infinity`, or `-Infinity`
+					codePoint < 0 || // not a valid Unicode code point
+					codePoint > 0x10FFFF || // not a valid Unicode code point
+					floor(codePoint) != codePoint // not an integer
+				) {
+					throw RangeError('Invalid code point: ' + codePoint);
+				}
+				if (codePoint <= 0xFFFF) { // BMP code point
+					codeUnits.push(codePoint);
+				} else { // Astral code point; split in surrogate halves
+					// https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+					codePoint -= 0x10000;
+					highSurrogate = (codePoint >> 10) + 0xD800;
+					lowSurrogate = (codePoint % 0x400) + 0xDC00;
+					codeUnits.push(highSurrogate, lowSurrogate);
+				}
+				if (index + 1 == length || codeUnits.length > MAX_SIZE) {
+					result += stringFromCharCode.apply(null, codeUnits);
+					codeUnits.length = 0;
+				}
+			}
+			return result;
+		};
+		if (defineProperty) {
+			defineProperty(String, 'fromCodePoint', {
+				'value': fromCodePoint,
+				'configurable': true,
+				'writable': true
+			});
+		} else {
+			String.fromCodePoint = fromCodePoint;
+		}
+	}());
+}
+</script>
+
 <script>
 // Based on http://forum.scssoft.com/viewtopic.php?f=41&t=186779
 function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
@@ -267,6 +334,55 @@ var popup_overlay = new ol.Overlay({
 });
 
 
+// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+var COUNTRY_NAME_TO_CODE = {
+	"andorra": "ad",
+	"austria": "at",
+	"belarus": "by",
+	"belgium": "be",
+	"bulgaria": "bg",
+	"czech": "cz",
+	"denmark": "dk",
+	"estonia": "ee",
+	"faroe": "fo",
+	"finland": "fi",
+	"france": "fr",
+	"germany": "de",
+	"iceland": "is",
+	"iom": "im",
+	"isle of man": "im",
+	"italy": "it",
+	"latvia": "lv",
+	"liecht": "li",
+	"liechtenstein": "li",
+	"lithuania": "lt",
+	"luxembourg": "lu",
+	"moldova": "md",
+	"netherlands": "nl",
+	"norway": "no",
+	"poland": "pl",
+	"romania": "ro",
+	"russia": "ru",
+	"slovakia": "sk",
+	"slovenia": "si",
+	"spain": "es",
+	"sweden": "se",
+	"switzerland": "ch",
+	"uk": "gb",
+	"united kingdom": "gb",
+	"ukraine": "ua"
+};
+
+// http://codepen.io/denilsonsa/pen/BKWNgB
+function country_code_to_unicode(cc) {
+	cc = cc.toLowerCase();
+	var flagA = 0x1F1E6;
+	var letter_a = 0x61;
+	var a = cc.charCodeAt(0) - letter_a;
+	var b = cc.charCodeAt(1) - letter_a;
+	return String.fromCodePoint(flagA + a, flagA + b);
+}
+
 // Copied from:
 // https://github.com/mike-koch/ets2-mobile-route-advisor/blob/5bde032121cbabac3bfd98f156a1e376d9903fd8/js/map.js
 // https://github.com/mike-koch/ets2-mobile-route-advisor/compare/promods-support
@@ -281,11 +397,12 @@ function getTextFeatures() {
 
 	var createTextStyle = function(resolution) {
 		var scale = Math.min(1, Math.max(0, 1.0 / Math.log2(resolution + 1) - 0.125));
+		var text = country_code_to_unicode(this.get('cc')) + ' ' + this.get('realName');
 		// console.log(scale, resolution);
 		// console.log(this.get('realName'), this.get('country'));
 		return [new ol.style.Style({
 			text: new ol.style.Text({
-				text: this.get('realName'),
+				text: text,
 				font: '32px "Helvetica Neue", "Helvetica", "Arial", sans-serif',
 				textAlign: 'center',
 				fill: fill,
@@ -297,6 +414,8 @@ function getTextFeatures() {
 
 	var features = g_cities_json.map(function(city) {
 		var map_coords = game_coord_to_pixels(city.x, city.z);
+		// cc = Country Code
+		city.cc = COUNTRY_NAME_TO_CODE[city.country.toLowerCase()];
 		var feature = new ol.Feature(city);
 		feature.setGeometry(new ol.geom.Point(map_coords));
 		feature.setStyle(createTextStyle);
@@ -318,6 +437,7 @@ function getTextLayer() {
 }
 
 
+// Finally, creating the map!
 var map = new ol.Map({
 	target: 'map',
 	controls: [
