@@ -16,6 +16,10 @@ The map images are loaded from `funbit-map-medium-dark-final/`. [The tiles were 
 
 You can also view them online: [leaflet.html](http://denilsonsa.github.io/ets2-stuff/leaflet.html) and [openlayers.html](http://denilsonsa.github.io/ets2-stuff/openlayers.html) and [openlayers-koenvh1.html](http://denilsonsa.github.io/ets2-stuff/openlayers-koenvh1.html).
 
+### `cities-promods-rusmap.js`
+
+Read [mike-koch/ets2-mobile-route-advisor/pull/85](https://github.com/mike-koch/ets2-mobile-route-advisor/pull/85) and [mike-koch/ets2-mobile-route-advisor/issues/90](https://github.com/mike-koch/ets2-mobile-route-advisor/issues/90).
+
 ### `coords.html`
 
 Quick way to experiment with coordinate conversions, useful to debug the formulas. Also available online: [coords.html](http://denilsonsa.github.io/ets2-stuff/coords.html)
