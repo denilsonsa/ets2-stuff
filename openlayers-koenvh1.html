@@ -136,6 +136,7 @@ body {
 
 <label id="track_checkbox_label"><input type="checkbox" id="track_checkbox"> Track a random virtual position/rotation</label>
 
+<script src="cities-promods-rusmap.js"></script>
 <script>
 // Based on http://forum.scssoft.com/viewtopic.php?f=41&t=186779
 function calculatePixelCoordinate(x, y, pointsPerPixel, x0, y0) {
@@ -265,6 +266,58 @@ var popup_overlay = new ol.Overlay({
 	}
 });
 
+
+// Copied from:
+// https://github.com/mike-koch/ets2-mobile-route-advisor/blob/5bde032121cbabac3bfd98f156a1e376d9903fd8/js/map.js
+// https://github.com/mike-koch/ets2-mobile-route-advisor/compare/promods-support
+// See also:
+// https://github.com/mike-koch/ets2-mobile-route-advisor/issues/90
+function getTextFeatures() {
+	var fill = new ol.style.Fill();
+	fill.setColor('#fff');
+	var stroke = new ol.style.Stroke();
+	stroke.setColor('#000');
+	stroke.setWidth(2);
+
+	var createTextStyle = function(resolution) {
+		var scale = Math.min(1, Math.max(0, 1.0 / Math.log2(resolution + 1) - 0.125));
+		// console.log(scale, resolution);
+		// console.log(this.get('realName'), this.get('country'));
+		return [new ol.style.Style({
+			text: new ol.style.Text({
+				text: this.get('realName'),
+				font: '32px "Helvetica Neue", "Helvetica", "Arial", sans-serif',
+				textAlign: 'center',
+				fill: fill,
+				stroke: stroke,
+				scale: scale
+			})
+		})];
+	};
+
+	var features = g_cities_json.map(function(city) {
+		var map_coords = game_coord_to_pixels(city.x, city.z);
+		var feature = new ol.Feature(city);
+		feature.setGeometry(new ol.geom.Point(map_coords));
+		feature.setStyle(createTextStyle);
+		return feature;
+	});
+
+	return features;
+}
+function getTextLayer() {
+	var textSource = new ol.source.Vector({
+		features: getTextFeatures(),
+		wrapX: false
+	});
+	var vectorLayer = new ol.layer.Vector({
+		source: textSource
+	});
+
+	return vectorLayer;
+}
+
+
 var map = new ol.Map({
 	target: 'map',
 	controls: [
@@ -306,6 +359,7 @@ var map = new ol.Map({
 				maxZoom: 7
 			})
 		}),
+		getTextLayer(),
 		// Debug layer below.
 		// new ol.layer.Tile({
 		// 	extent: [0, 0, MAX_X, MAX_Y],
