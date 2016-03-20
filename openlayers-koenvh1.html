@@ -397,17 +397,31 @@ function getTextFeatures() {
 
 	var createTextStyle = function(resolution) {
 		var scale = Math.min(1, Math.max(0, 1.0 / Math.log2(resolution + 1) - 0.125));
-		var text = country_code_to_unicode(this.get('cc')) + ' ' + this.get('realName');
+		var text = this.get('realName'); //Removed country_code_to_unicode(this.get('cc')) + ' ' + 
 		// console.log(scale, resolution);
 		// console.log(this.get('realName'), this.get('country'));
 		return [new ol.style.Style({
+			//Creating a new image layer
+			image: new ol.style.Icon(({
+							//By default, the images are too large. Depends on the flag set.
+                            scale: scale / 15,
+                            rotateWithView: true,
+                            anchor: [0.5, 1],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+							//Get flag image
+							//images from: http://lipis.github.io/flag-icon-css/
+                            src: 'flags/' + this.get('cc') + '.svg'
+                        })),
 			text: new ol.style.Text({
 				text: text,
 				font: '32px "Helvetica Neue", "Helvetica", "Arial", sans-serif',
 				textAlign: 'center',
 				fill: fill,
 				stroke: stroke,
-				scale: scale
+				scale: scale,
+				//Move the text down, otherwise the flag and text will overlap. 
+				offsetY: 14 * scale
 			})
 		})];
 	};
