@@ -374,16 +374,6 @@ var COUNTRY_NAME_TO_CODE = {
 	"ukraine": "ua"
 };
 
-// http://codepen.io/denilsonsa/pen/BKWNgB
-function country_code_to_unicode(cc) {
-	cc = cc.toLowerCase();
-	var flagA = 0x1F1E6;
-	var letter_a = 0x61;
-	var a = cc.charCodeAt(0) - letter_a;
-	var b = cc.charCodeAt(1) - letter_a;
-	return String.fromCodePoint(flagA + a, flagA + b);
-}
-
 // Copied from:
 // https://github.com/mike-koch/ets2-mobile-route-advisor/blob/5bde032121cbabac3bfd98f156a1e376d9903fd8/js/map.js
 // https://github.com/mike-koch/ets2-mobile-route-advisor/compare/promods-support
@@ -398,22 +388,20 @@ function getTextFeatures() {
 
 	var createTextStyle = function(resolution) {
 		var scale = Math.min(1, Math.max(0, 1.0 / Math.log2(resolution + 1) - 0.125));
-		var text = this.get('realName'); //Removed country_code_to_unicode(this.get('cc')) + ' ' + 
-		// console.log(scale, resolution);
-		// console.log(this.get('realName'), this.get('country'));
+		var text = this.get('realName');
 		return [new ol.style.Style({
-			//Creating a new image layer
 			image: new ol.style.Icon(({
-							//By default, the images are too large. Depends on the flag set.
-                            scale: scale / 15,
-                            //rotateWithView: true,
-                            anchor: [0.5, 1],
-                            anchorXUnits: 'fraction',
-                            anchorYUnits: 'fraction',
-							//Get flag image
-							//images from: http://lipis.github.io/flag-icon-css/
-                            src: 'flags/' + this.get('cc') + '.svg'
-                        })),
+				rotateWithView: false,
+				anchor: [0.5, 1],
+				anchorXUnits: 'fraction',
+				anchorYUnits: 'fraction',
+				snapToPixel: false,
+				// Flag images from: http://lipis.github.io/flag-icon-css/
+				src: 'flags/' + this.get('cc') + '.svg',
+				// All those flags have size=640x480.
+				// The exected height is 32px, the same as the text.
+				scale: 32 / 480 * scale
+			})),
 			text: new ol.style.Text({
 				text: text,
 				font: '32px "Helvetica Neue", "Helvetica", "Arial", sans-serif',
@@ -421,8 +409,8 @@ function getTextFeatures() {
 				fill: fill,
 				stroke: stroke,
 				scale: scale,
-				//Move the text down, otherwise the flag and text will overlap. 
-				offsetY: 14 * scale
+				// Move the text down, half of the flag height.
+				offsetY: 16 * scale
 			})
 		})];
 	};
