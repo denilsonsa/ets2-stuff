@@ -30,7 +30,9 @@ Converts one huge image into several small tiles, for use in a pan-and-zoom map-
 
 Originally, I intended to write code to slice the image and save each tile individually, but then I found [vips](http://libvips.blogspot.com/), which already [has it implemented into an easy-to-use command](http://libvips.blogspot.com/2013/03/making-deepzoom-zoomify-and-google-maps.html). In addition, it supports very large images while maintaining a low memory footprint.
 
-After generating the tiles, it is possible to use [zopflipng](https://github.com/google/zopfli/tree/master/src/zopflipng/) (with [zopflipng_in_place](https://bitbucket.org/denilsonsa/small_scripts/src/default/zopflipng_in_place) helper script) to further compress the PNG files. This may take several hours, but will most likely reduce the file size.
+### `optimize_png_tiles.py`
+
+Uses [zopflipng](https://github.com/google/zopfli/tree/master/src/zopflipng/) to optimize all PNG files generated after slicing the map. Takes several hours to finish, and the final result will be smaller while still preserving the original quality.
 
 ### `join_tiles_vips.sh`
 

@@ -60,15 +60,7 @@ if [ -f "$1" ] ; then
 	# If it still fails, maybe there is some deadlock or racing condition on vips binary.
 	# Try again passing --vips-concurrency=1
 
-	# If you want to further compress all the PNG files, execute:
-	#   find "${base}" -name '*.png' -exec zopflipng_in_place -P 3 {} +
-	# Where 3 is the number of parallel processes.
-	#
-	# This step is highly recommended, but might take several hours.
-	# It takes too long because it re-encodes equal files multiple times.
-	# It should be possible to write a tool that caches the results, which would speed up the process.
-	# https://bitbucket.org/denilsonsa/small_scripts/src/default/zopflipng_in_place
-	# https://github.com/google/zopfli/tree/master/src/zopflipng/
+	# If you want to further compress all the PNG files, execute optimize_png_tiles.py.
 else
 	echo "Usage: ./slice_and_resize.sh  very-large-image.png  basedir"
 fi
