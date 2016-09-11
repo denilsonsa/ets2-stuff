@@ -48,9 +48,27 @@ if [ -f "$1" ] ; then
 		"${input}" \
 		"${base}" \
 		--layout google \
-		--suffix .png[compression=9] \
+		--suffix .png \
 		--background '0 0 0 0' \
 		--vips-progress
+
+	# If this command fails, maybe the input image has only 3 channels (RGB) instead of 4 (RGBA).
+	# You can convert it from RGB to RGB using:
+	#   vips bandjoin_const "${input}" very_large_multi_gigabyte_file.v "255"
+	# http://stackoverflow.com/a/39431357/
+	#
+	# If it still fails, maybe there is some deadlock or racing condition on vips binary.
+	# Try again passing --vips-concurrency=1
+
+	# If you want to further compress all the PNG files, execute:
+	#   find "${base}" -name '*.png' -exec zopflipng_in_place -P 3 {} +
+	# Where 3 is the number of parallel processes.
+	#
+	# This step is highly recommended, but might take several hours.
+	# It takes too long because it re-encodes equal files multiple times.
+	# It should be possible to write a tool that caches the results, which would speed up the process.
+	# https://bitbucket.org/denilsonsa/small_scripts/src/default/zopflipng_in_place
+	# https://github.com/google/zopfli/tree/master/src/zopflipng/
 else
 	echo "Usage: ./slice_and_resize.sh  very-large-image.png  basedir"
 fi
