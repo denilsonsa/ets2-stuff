@@ -224,6 +224,7 @@ function game_coord_to_pixels(x, y) {
 
 var MAX_X = 28314;
 var MAX_Y = 23560;
+var MAX_TILE_ZOOM = 8;
 
 
 var projection = new ol.proj.Projection({
@@ -305,8 +306,8 @@ var custom_tilegrid = new ol.tilegrid.TileGrid({
 	tileSize: [256, 256],
 	resolutions: (function(){
 		var r = [];
-		for (var z = 0; z <= 7; ++z) {
-			r[z] = Math.pow(2, 7 - z);
+		for (var z = 0; z <= MAX_TILE_ZOOM; ++z) {
+			r[z] = Math.pow(2, MAX_TILE_ZOOM - z);
 		}
 		return r;
 	})()
@@ -479,7 +480,7 @@ var map = new ol.Map({
 				// 	tileSize: [256, 256]
 				// }),
 				wrapX: false,
-				maxZoom: 7
+				maxZoom: MAX_TILE_ZOOM
 			})
 		}),
 		getTextLayer(),
@@ -512,7 +513,7 @@ var map = new ol.Map({
 		//center: ol.proj.transform([37.41, 8.82], 'EPSG:4326', 'EPSG:3857'),
 		center: [MAX_X/2, MAX_Y/2],
 		minZoom: 0,
-		maxZoom: 9,
+		maxZoom: MAX_TILE_ZOOM + 2,
 		zoom: 2
 	})
 });
