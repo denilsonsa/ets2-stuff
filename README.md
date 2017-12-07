@@ -84,6 +84,7 @@ External links
 * [Full printable map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=169132), by Funbit
 * [Full A0 printable high-resolution map for ETS2](http://forum.scssoft.com/viewtopic.php?f=41&t=186779), by Funbit
 * [Pull request #85: ProMods + RusMap version](https://github.com/mike-koch/ets2-mobile-route-advisor/pull/85),  <https://github.com/Koenvh1/ETS2-City-Coordinate-Retriever>
+* [ets2-map-settings-mod updated for recent ETS2 versions](https://github.com/shardick/ets2-map-settings-mod), by shardick
 
 Other maps:
 
